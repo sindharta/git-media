@@ -7,7 +7,7 @@ require 'git-media/transport/scp'
 module GitMedia
 
   def self.get_media_buffer
-    @@git_dir ||= `git rev-parse --git-dir`.chomp
+    @@git_dir ||= '.git'
     media_buffer = File.join(@@git_dir, 'media/objects')
     FileUtils.mkdir_p(media_buffer) if !File.exist?(media_buffer)
     return media_buffer
