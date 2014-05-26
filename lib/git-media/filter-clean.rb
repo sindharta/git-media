@@ -27,6 +27,8 @@ module GitMedia
       #  calculating the SHA and copying to a tempfile
       tempfile = Tempfile.new('media')
       tempfile.binmode      
+      hashfunc.update(possible_sha)
+      tempfile.write(possible_sha)      
       while data = STDIN.read(4096)
         hashfunc.update(data)
         tempfile.write(data)
