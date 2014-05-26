@@ -86,7 +86,7 @@ module GitMedia
     def self.local_cache_status
       # find files in media buffer and upload them
       references = {:unpushed => [], :pushed => []}
-      all_cache = Dir.chdir(GitMedia.get_media_buffer) { Dir.glob('*') }
+      all_cache = Dir.chdir(GitMedia.get_top_media_buffer) { Dir.glob('*') }
       unpushed_files = @push.get_unpushed(all_cache) || []
       references[:unpushed] = unpushed_files
       references[:pushed] = all_cache - unpushed_files rescue []
