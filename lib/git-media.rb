@@ -6,9 +6,21 @@ require 'git-media/transport/scp'
 
 module GitMedia
 
+  #Assumes that this is always called from the root git folder.
+  #We create a get_media_buffer func without using "git rev-parse --git-dir" 
+  #because that cmd is creating a lot of popup windows on gitk.
   def self.get_media_buffer
     @@git_dir ||= '.git'
-    media_buffer = File.join(@@git_dir, 'media/objects')
+    return get_media_buffer_path(@@git_dir)
+  end
+  
+  def self.get_top_media_buffer
+    @@git_dir ||= `git rev-parse --git-dir`.chomp
+    return get_media_buffer_path(@@git_dir)
+  end  
+  
+  def self.get_media_buffer_path(git_dir)
+    media_buffer = File.join(git_dir, 'media/objects')
     FileUtils.mkdir_p(media_buffer) if !File.exist?(media_buffer)
     return media_buffer
   end
