@@ -12,6 +12,11 @@ module GitMedia
       hashfunc = Digest::SHA1.new
       start = Time.now
 
+      filename = "";
+      if ARGV.length > 0 
+        filename = ARGV[0]
+      end
+      
       #read first 41 bytes and see if this is a stub
       possible_sha = STDIN.read(64) # read no more than 64 bytes
       possible_sha_strip = possible_sha.strip
@@ -19,7 +24,7 @@ module GitMedia
         # STUB
         STDOUT.print(possible_sha)
         STDOUT.binmode
-        STDERR.puts("Media not downloaded yet: " + possible_sha)
+        STDERR.puts("Media not downloaded yet: " + filename + ", " + possible_sha )
         return
       end      
 
@@ -45,7 +50,7 @@ module GitMedia
       FileUtils.mv(tempfile.path, media_file)
 
       elapsed = Time.now - start
-      STDERR.puts('Saving media : ' + hx + ' : ' + elapsed.to_s)
+      STDERR.puts('Saving media : ' + filename + ", " + hx + ' : ' + elapsed.to_s)
     end
 
   end

@@ -5,17 +5,22 @@ module GitMedia
       media_buffer = GitMedia.get_media_buffer
       can_download = true # TODO: read this from config and implement
      
+      filename = "";
+      if ARGV.length > 0 
+        filename = ARGV[0]
+      end
+      
       # read checksum size
       sha = STDIN.readline(64).strip # read no more than 64 bytes
       if STDIN.eof? && sha.length == 40 && sha.match(/^[0-9a-fA-F]+$/) != nil
         # this is a media file
         media_file = File.join(media_buffer, sha.chomp)
         if File.exists?(media_file)
-          self.recover_media(media_file,sha)
+          self.recover_media(media_file,filename,sha)
         else
           # TODO: download file if not in the media buffer area
           if !can_download
-            STDERR.puts('media missing, saving placeholder : ' + sha)
+            STDERR.puts('media missing, saving placeholder : ' + filename  + ", " + sha)
             puts sha
           else
             #download file to the media buffer area
@@ -24,14 +29,14 @@ module GitMedia
             if !File.exist?(cache_file)
               @pull.pull(media_file, sha) 
               if File.exists?(media_file)
-                self.recover_media(media_file,sha)
+                self.recover_media(media_file,filename,sha)
               else
-                STDERR.puts('downloading media failed : ' + cache_file)
+                STDERR.puts('downloading media failed : ' + filename + ", " + cache_file)
                 STDOUT.binmode 
                 puts sha
               end              
             else
-              STDERR.puts('media file not found : ' + cache_file)
+              STDERR.puts('media file not found : ' + filename + ", " + cache_file)
               STDOUT.binmode 
               puts sha             
             end          
@@ -48,8 +53,8 @@ module GitMedia
       end
     end
     
-    def self.recover_media(media_file,sha)    
-      STDERR.puts('recovering media : ' + sha)
+    def self.recover_media(media_file,filename, sha)    
+      STDERR.puts('recovering media : ' + filename + ", " + sha)
       STDOUT.binmode      
       File.open(media_file, 'rb') do |f|
         while data = f.read(4096) do
