@@ -8,8 +8,8 @@ without storing the media in Git itself.
 Setup the attributes filter settings.
 
 	(once after install)
-	$ git config filter.media.clean "git-media filter-clean"
-	$ git config filter.media.smudge "git-media filter-smudge"
+	$ git config filter.media.clean "git-media filter-clean %f"
+	$ git config filter.media.smudge "git-media filter-smudge %f"
 
 Setup the `.gitattributes` file to map extensions to the filter.
 
